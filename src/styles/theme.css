@@ -1,0 +1,151 @@
+@keyframes fadeRise {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-rise {
+  animation: fadeRise 0.8s ease-out both;
+}
+
+.animate-fade-rise-delay {
+  animation: fadeRise 0.8s ease-out 0.2s both;
+}
+
+.animate-fade-rise-delay-2 {
+  animation: fadeRise 0.8s ease-out 0.4s both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-rise,
+  .animate-fade-rise-delay,
+  .animate-fade-rise-delay-2 {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* TV-screen effect: masks the video's loop seam and doubles as the
+   section-change transition. Three parts, all transient (fully gone
+   once `.glitch-active` finishes animating — nothing left "on"):
+     1. the video itself jitters slightly with a faint RGB fringe
+        (via drop-shadow, not solid color blocks)
+     2. a single bright bar sweeps top-to-bottom once, like an old CRT
+        losing vertical hold for a moment
+     3. a brief static/noise flicker, like a signal drop */
+@keyframes tvJitter {
+  0% {
+    transform: translate(0, 0);
+    filter: contrast(1) saturate(1) brightness(1);
+  }
+  20% {
+    transform: translate(-0.6%, 0.3%);
+    filter: contrast(1.15) saturate(1.3) brightness(1.05)
+      drop-shadow(1.5px 0 0 rgba(56, 189, 248, 0.4))
+      drop-shadow(-1.5px 0 0 rgba(244, 63, 94, 0.4));
+  }
+  40% {
+    transform: translate(0.5%, -0.2%);
+    filter: contrast(0.92) saturate(1.1) brightness(0.95);
+  }
+  55% {
+    transform: translate(-0.3%, 0.4%);
+    filter: contrast(1.1) drop-shadow(1px 0 0 rgba(56, 189, 248, 0.3))
+      drop-shadow(-1px 0 0 rgba(244, 63, 94, 0.3));
+  }
+  75% {
+    transform: translate(0.3%, -0.3%);
+    filter: contrast(1) saturate(1);
+  }
+  100% {
+    transform: translate(0, 0);
+    filter: contrast(1) saturate(1) brightness(1);
+  }
+}
+
+.glitch-active {
+  animation: tvJitter 0.45s steps(2, jump-end) 1;
+}
+
+@keyframes tvRollBar {
+  0% {
+    top: -15%;
+    opacity: 0;
+  }
+  8% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 0.3;
+  }
+  92% {
+    opacity: 0.55;
+  }
+  100% {
+    top: 115%;
+    opacity: 0;
+  }
+}
+
+.tv-roll-bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 6%;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(255, 255, 255, 0.35),
+    transparent
+  );
+  mix-blend-mode: screen;
+  opacity: 0;
+}
+
+.tv-roll-bar.glitch-active {
+  animation: tvRollBar 0.5s ease-in-out 1;
+}
+
+@keyframes tvStatic {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.22;
+  }
+  40% {
+    opacity: 0.08;
+  }
+  60% {
+    opacity: 0.25;
+  }
+  80% {
+    opacity: 0.05;
+  }
+}
+
+.tv-static {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='60' height='60'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/></svg>");
+  background-size: 120px 120px;
+  mix-blend-mode: overlay;
+  opacity: 0;
+}
+
+.tv-static.glitch-active {
+  animation: tvStatic 0.5s steps(4, jump-end) 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glitch-active,
+  .tv-roll-bar.glitch-active,
+  .tv-static.glitch-active {
+    animation: none;
+  }
+}
